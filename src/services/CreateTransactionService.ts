@@ -8,8 +8,16 @@ class CreateTransactionService {
     this.transactionsRepository = transactionsRepository;
   }
 
-  public execute(): Transaction {
-    // TODO
+  public execute(dados: Omit<Transaction, 'id'>): Transaction {
+    if (dados.type === 'outcome') {
+      const balance = this.transactionsRepository.getBalance();
+
+      if (balance.total < dados.value) {
+        throw Error('Not enough founds.');
+      }
+    }
+    const repository = this.transactionsRepository.create(dados);
+    return repository;
   }
 }
 
